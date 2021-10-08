@@ -1,0 +1,121 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 600,
+  "title": "Soil Enhancer Use In Australia",
+  "data": {
+    "url": "https://raw.githubusercontent.com/Sarah-Kaehne/Week10/main/data/Land_Management_and_Farming_Simple.csv"
+  },
+  "params": [
+    {
+      "name": "Area_Above",
+      "value": 0,
+      "bind": {
+      "input": "range",
+      "min": 0,
+      "max": 100000000,
+      "step": 1000,
+      "name": "Minimum Area: "
+      }
+    },
+    {
+    "name": "State_selection",
+    "bind": {
+    "input": "select",
+    "options": [
+    null,
+    "NSW AND ACT",
+    "VIC",
+    "QLD",
+    "SA",
+    "WA",
+    "TAS",
+    "NT"
+    ],
+    "labels":[
+    "Show All",
+    "NSW AND ACT",
+    "VIC",
+    "QLD",
+    "SA",
+    "WA",
+    "TAS",
+    "NT"
+    ],
+    "name": "State Selection: "
+    }},
+    {
+      "name": "state_highlight",
+      "select": {"type": "point", "fields": ["State"]},
+      "bind": "legend"
+      }
+  ],
+  "transform": [
+    {"filter": "datum.TotalArea > 0"},
+    {"filter": "State_selection == null || datum.State == State_selection"},
+    {"filter": "datum.TotalArea > Area_Above"}
+  ],  
+  "mark": "circle",
+  "encoding": {
+  "x": {
+    "field": "SoilEnhancerArea",
+    "type": "quantitative",
+    "title": "Area covered by Soil Enhancer",
+    "axis": {"tickCount": 10},
+    "scale": {"domain": [1, 2200000]}
+  },
+  "y": {
+    "field": "SoilEnhancerVol",
+    "type": "quantitative",
+    "title": "Volume of Soil Enhancer Used",
+    "axis": {"tickCount": 10},
+    "scale": {"domain": [1, 230000000]}
+  },
+  "color": {
+  "field": "State",
+  "type": "nominal",
+  "scale":{
+    "domain":[
+      "NSW AND ACT",
+      "VIC",
+      "QLD",
+      "SA",
+      "WA",
+      "TAS",
+      "NT"
+    ],
+    "range":[
+      "#e41a1c",
+      "#984ea3",
+      "#ff7f00",
+      "#a6cee3",
+      "#377eb8",
+      "#e65777",
+      "#a65628"
+    ]
+  }
+  },
+  "opacity": {
+    "condition": {"param": "state_highlight", "value": 1},
+    "value": 0.1
+    },
+  "size": {
+  "field": "TotalArea",
+  "type": "quantitative",
+  "scale": {
+    "type": "threshold",
+    "domain": [250000, 1000000, 5000000, 10000000, 50000000, 70000000],
+    "range": [10, 50, 150, 200, 300, 400, 500]
+    },
+    "legend": {"format": ".1s"}
+  },
+  "tooltip": [
+    {"field": "RegionLabel", "type": "nominal", "title": "Region"},
+    {"field": "State", "type": "nominal"},
+    {"field": "TotalArea", "type": "nominal", "format": ",", "title": "Region Ha"},
+    {"field": "SoilEnhancerArea", "type": "quantitative", "format": ",", "title": "Ha of Soil Enhancer"},
+    {"field": "SoilEnhancerVol", "type": "quantitative", "format": ",", "title": "L of Soil Enhancer"}
+  ]
+   
+  }
+}
